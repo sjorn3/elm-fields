@@ -58,12 +58,8 @@ map : FieldLens a b c d -> (b -> c) -> a -> d
 map field f record =
     set field (f <| get field record) record
 
--- map2 : FieldLens a b c d -> (b -> c) -> a -> d
--- map2 field f record record2 =
---     set field (f <| get field record) record
-
--- cocompose : FieldLens a a1 c d -> FieldLens a1 b (a -> d) d1 -> { get : a -> b, set : c -> a1 -> d1 }mpose : FieldLens a b c d -> FieldLens b c 
--- compose : FieldLens a a1 c d -> FieldLens a1 b (a -> d) d1 -> { get : a -> b, set : c -> a1 -> d1 }
--- compose a b = {get = get a >> get b, set = (\ a r -> set a >> set b)} 
+{-|
+Compose field names, useful when records are nested.
+-}
 compose : FieldLens a b d e -> FieldLens b c g d -> FieldLens a c g e
 compose a b = FieldLens (get a >> get b) (\ x r -> set a (set b x <| get a r) r)
