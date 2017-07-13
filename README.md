@@ -13,7 +13,7 @@ and also applying updates to fields with a clean syntax.
 - Compose them with `compose` (`<-<` or `>->`) to access and modify elements of
   deeply nested records with a smaller code size.
   - ``setX n = set (pos >-> x) n`` 
-- Although intended for records, the the underlying lenses are general enough
+- Although intended for records, the underlying lenses are general enough
   for any data type. 
 
 ## Game Example
@@ -40,9 +40,9 @@ The names are defined once and for all and are completely boilerplate, so let's
 define them right away and get it over with. Hopefully in the future this
 process will be completely automated. 
 ```elm
-name      = FieldLens .name      (\a r -> { r | name =      a })
+name      = FieldLens .name      (\a r -> { r | name      = a })
 num_lives = FieldLens .num_lives (\a r -> { r | num_lives = a })
-ammo      = FieldLens .ammo      (\a r -> { r | ammo =      a })
+ammo      = FieldLens .ammo      (\a r -> { r | ammo      = a })
 ```
  
 ## Usage
