@@ -51,8 +51,7 @@ they can be dealt with using first class fields.
 
 ```elm
 {-| Imagine we have a list of enemies in play, and we want to find all of their
-names, we can do this with a simple List.map
-
+names, we can do this with a simple List.map.
 -}
 getEnemyNames : List Enemy -> List String
 getEnemyNames =
@@ -70,8 +69,9 @@ getNames =
     List.map (get name)
 
 
-{-| Or maybe a new round starts and you want to set all of the enemies ammo
-to 10
+{-| However, this is not different to using `List.map .name`, so what can we
+do that we could already? You might want to reset all of the enemies ammo
+to 20 at the start of a new round. 
 -}
 resetEnemies : List Enemy -> List Enemy
 resetEnemies =
@@ -83,7 +83,7 @@ which can be done with a call to `modify`
 -}
 playerHit : Player -> Player
 playerHit =
-    modify num_lives ((-) 1)
+    modify num_lives (flip (-) 1)
 
 
 {-| Or if you have a list of enemies and you just hit them all in one shot,
@@ -91,5 +91,24 @@ you might want to modify all of their lives in one go
 -}
 attackAllEnemies : List Enemy -> List Enemy
 attackAllEnemies =
-    List.map (modify num_lives ((-) 1))
+    List.map (modify num_lives (flip (-) 1))
+```
+## Field passing
+
+Here are a couple of slightly more complex examples of functions which take
+a field and access it.
+
+```elm
+{-| If you're debugging and want to print some stats to the screen, you might
+want to stringify one particular field, which is where using a field as an
+argument comes in handy.
+-}
+toStringField : FieldLens a b c d -> a -> String
+toStringField field = toString << get field
+
+{-| You could also define a function which takes the field and turns it into
+a string in a similar way using modify
+-}
+fieldToString : FieldLens a b String d -> a -> d
+fieldToString field = modify field toString
 ```

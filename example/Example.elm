@@ -59,7 +59,7 @@ getNames =
 
 
 {-| Or maybe a new round starts and you want to set all of the enemies ammo
-to 10
+to 20
 -}
 resetEnemies : List Enemy -> List Enemy
 resetEnemies =
@@ -71,7 +71,7 @@ which can be done with a call to `modify`
 -}
 playerHit : Player -> Player
 playerHit =
-    modify num_lives ((-) 1)
+    modify num_lives (flip (-) 1)
 
 
 {-| Or if you have a list of enemies and you just hit them all in one shot,
@@ -79,4 +79,10 @@ you might want to modify all of their lives in one go
 -}
 attackAllEnemies : List Enemy -> List Enemy
 attackAllEnemies =
-    List.map (modify num_lives ((-) 1))
+    List.map (modify num_lives (flip (-) 1))
+
+toStringField : FieldLens a b c d -> a -> String
+toStringField field = toString << get field
+
+fieldToString : FieldLens a b String d -> a -> d
+fieldToString field = modify field toString
