@@ -70,7 +70,7 @@ getNames =
 
 
 {-| However, this is not different to using `List.map .name`, so what can we
-do that we could already? You might want to reset all of the enemies ammo
+do that we couldn't already? You might want to reset all of the enemies ammo
 to 20 at the start of a new round. 
 -}
 resetEnemies : List Enemy -> List Enemy
