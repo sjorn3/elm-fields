@@ -58,7 +58,7 @@ set =
 
 {-| Allows applying an update function to the specific field of the record.
 
-    modify num_lives ((+) 1) player
+    modify num_lives ((+) 1) player == { num_lives = 11, ... }
 
 -}
 modify : FieldLens a b c d -> (b -> c) -> a -> d
