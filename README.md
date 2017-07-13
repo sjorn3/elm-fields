@@ -1,4 +1,4 @@
-# elm-fields: First Class Fieldnames
+# elm-fields: First Class Fieldnames [![Build Status](https://travis-ci.com/sjorn3/elm-fields.svg?token=yqduYxjYcVhWa7fwLx3k&branch=master)](https://travis-ci.com/sjorn3/elm-fields)
 This library provides a system for passing field names as arguments to functions
 and also applying updates to fields with a clean syntax.
 
@@ -8,8 +8,8 @@ and also applying updates to fields with a clean syntax.
   to.
 - Easily readable syntax:
   - `reset        = set num_lives 10`
-  - `subOne field = modify field ((-) 1)`
-  - `playerHit    = subOne num_lives`
+  - `addOne field = modify field ((+) 1)`
+  - `addLife player = addOne num_lives player`
 - Compose them with `compose` (`<-<` or `>->`) to access and modify elements of
   deeply nested records with a smaller code size.
   - ``setX n = set (pos >-> x) n`` 
@@ -33,16 +33,16 @@ type alias Enemy =
     { name : String, num_lives : Int, ammo : Int }
 ```
 
-We need to now define our lenses for the fields.
+We need to now define our lenses for the fields. They are defined in the form
+`FieldLens get set`, so all that needs to be defined is a getter and a setter.
 
-The names are defined once and for all, and are completely boilerplate, so let's
-define them right away and get it over with. Hopefully this process can be
-automated at some point.
-
+The names are defined once and for all and are completely boilerplate, so let's
+define them right away and get it over with. Hopefully in the future this
+process will be completely automated. 
 ```elm
-name      = FieldLens .name      (\a r -> { r | name = a      })
+name      = FieldLens .name      (\a r -> { r | name =      a })
 num_lives = FieldLens .num_lives (\a r -> { r | num_lives = a })
-ammo      = FieldLens .ammo      (\a r -> { r | ammo = a      })
+ammo      = FieldLens .ammo      (\a r -> { r | ammo =      a })
 ```
  
 ## Usage

@@ -4,12 +4,10 @@
     "repository": "https://github.com/sjorn3/elm-fields.git",
     "license": "BSD3",
     "source-directories": [
-        "..\\src",
+        "../src",
         "."
     ],
-    "exposed-modules": [
-        "FieldLens"
-    ],
+    "exposed-modules": [],
     "dependencies": {
         "elm-lang/core": "5.1.1 <= v < 6.0.0",
         "elm-community/elm-test": "4.0.0 <= v < 5.0.0"
