@@ -1,12 +1,14 @@
 {
     "version": "1.0.0",
-    "summary": "First class field names for elm.",
+    "summary": "First class field names for elm",
     "repository": "https://github.com/sjorn3/elm-fields.git",
     "license": "BSD3",
     "source-directories": [
         "./src"
     ],
-    "exposed-modules":[],
+    "exposed-modules":[
+        "FieldLens"
+    ],
     "dependencies": {
         "elm-lang/core": "5.1.1 <= v < 6.0.0"
     },
