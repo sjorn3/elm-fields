@@ -1,4 +1,4 @@
-module FieldLens exposing (..)
+module FieldLens exposing (FieldLens, get, set, modify, compose, (>->), (<-<))
 
 {-| A module that allows field names to become parameters to functions. That is,
 a module which provides first class field names.
@@ -6,27 +6,30 @@ a module which provides first class field names.
 These operations are intended for use with field names, but the types are
 general enough for integration with other data types should the need arise.
 
-@docs Field, set, get, rw
+# Field Lenses
 
+@docs FieldLens
+
+# Manipulating Fields
+
+@docs get, set, modify
+
+# Composing field names
+
+@docs compose, (>->), (<-<)
 -}
 
 
-{-| A record that provides a getter and setter function. Very similar to the
-interface of a Lens except slightly generalised to allow for the fact that
-fields can change their type.
+{-| A record that provides a getter and setter function. Allows for the fact
+that fields can change their type.
 
-Definitions of the this type will be boilerplate. For example:
+Definitions of the this type will be boilerplate, and will all have a form like
+this:
 
-```
-type alias Model {
-  field_name : String
-}
+    field_name = { .field_name, (\a r -> { r | field_name = a })}
 
-field_name = { .field_name, (\a r -> { r | field_name = a })}
-```
-
-Notice that the fields name can be reused.
-
+This example leverages the fact that the field_name can be used as both the
+record's name and the field, but it could be called anything.
 -}
 type alias FieldLens a b c d =
     { get : a -> b, set : c -> a -> d }
@@ -34,9 +37,7 @@ type alias FieldLens a b c d =
 
 {-| Synonym for `.get`. Allows for slightly nicer usage of the field name.
 
-```
-get field_name record
-```
+    get num_lives player == 5
 
 -}
 get : FieldLens a b c d -> a -> b
@@ -47,9 +48,7 @@ get =
 {-| As with `get`, this is simply a synonym for `.set` and allows for slightly
 nicer usage of the field name.
 
-```
-set num_lives 10 player
-```
+     set num_lives 10 player == { num_lives = 10, ... }
 
 -}
 set : FieldLens a b c d -> c -> a -> d
@@ -58,6 +57,9 @@ set =
 
 
 {-| Allows applying an update function to the specific field of the record.
+
+    modify num_lives ((+) 1) player
+
 -}
 modify : FieldLens a b c d -> (b -> c) -> a -> d
 modify field f record =
@@ -65,18 +67,39 @@ modify field f record =
 
 
 {-| Compose field names, useful when records are nested.
+
+    player : { pos : { x : Int, y : Int }}
+    player = Player (Pos 0 0)
+
+    set (compose pos x) 10 player == Player (Pos 10 0)
+
 -}
 compose : FieldLens a b d e -> FieldLens b c g d -> FieldLens a c g e
 compose a b =
     FieldLens (get a >> get b) (\x r -> set a (set b x <| get a r) r)
 
-{-| Infix synonyms for compose in either direction
--}
+
 
 --infixr 5 (<-<)
+
+
+{-| Right associative infix synonym for compose.
+
+    set (x <-< pos) 10 player == Player (Pos 10 0)
+-}
 (<-<) : FieldLens b c g d -> FieldLens a b d e -> FieldLens a c g e
-(<-<) = flip compose
+(<-<) =
+    flip compose
+
+
 
 --infixl 5 (>->)
+
+
+{-| Left associative infix synonym for compose.
+
+    set (pos >-> x) 10 player == Player (Pos 10 0)
+-}
 (>->) : FieldLens a b d e -> FieldLens b c g d -> FieldLens a c g e
-(>->) = compose
+(>->) =
+    compose
