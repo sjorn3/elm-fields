@@ -69,3 +69,14 @@ modify field f record =
 compose : FieldLens a b d e -> FieldLens b c g d -> FieldLens a c g e
 compose a b =
     FieldLens (get a >> get b) (\x r -> set a (set b x <| get a r) r)
+
+{-| Infix synonyms for compose in either direction
+-}
+
+--infixr 5 (<-<)
+(<-<) : FieldLens b c g d -> FieldLens a b d e -> FieldLens a c g e
+(<-<) = flip compose
+
+--infixl 5 (>->)
+(>->) : FieldLens a b d e -> FieldLens b c g d -> FieldLens a c g e
+(>->) = compose
