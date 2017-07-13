@@ -26,40 +26,46 @@ field_name = { .field_name, (\a r -> { r | field_name = a })}
 ```
 
 Notice that the fields name can be reused.
+
 -}
 type alias FieldLens a b c d =
     { get : a -> b, set : c -> a -> d }
 
-{-|
-Simply a synonym for `.get`. Allows for slightly nice usage of the field name.
+
+{-| Synonym for `.get`. Allows for slightly nicer usage of the field name.
+
 ```
 get field_name record
 ```
+
 -}
 get : FieldLens a b c d -> a -> b
 get =
     .get
 
-{-|
-As with `get`, this is simply a synonym for `.set` and allows for slightly nicer
-usage of the field name.
+
+{-| As with `get`, this is simply a synonym for `.set` and allows for slightly
+nicer usage of the field name.
+
 ```
 set num_lives 10 player
 ```
+
 -}
 set : FieldLens a b c d -> c -> a -> d
 set =
     .set
 
-{-|
-Allows applying an update function to the specific field of the record.
+
+{-| Allows applying an update function to the specific field of the record.
 -}
-map : FieldLens a b c d -> (b -> c) -> a -> d
-map field f record =
+modify : FieldLens a b c d -> (b -> c) -> a -> d
+modify field f record =
     set field (f <| get field record) record
 
-{-|
-Compose field names, useful when records are nested.
+
+{-| Compose field names, useful when records are nested.
 -}
 compose : FieldLens a b d e -> FieldLens b c g d -> FieldLens a c g e
-compose a b = FieldLens (get a >> get b) (\ x r -> set a (set b x <| get a r) r)
+compose a b =
+    FieldLens (get a >> get b) (\x r -> set a (set b x <| get a r) r)

@@ -19,7 +19,9 @@ type alias Enemy =
 
 We need to now define our lenses for the fields.
 
-The names are defined once and for all, so let's create them right away.
+The names are defined once and for all, so let's create them right away, and
+are completely boilerplate. Hopefully this process can be automated at some
+point.
 
 ```elm
 name      = FieldLens .name      (\a r -> { r | name = a      })
@@ -36,7 +38,8 @@ names, we can do this with a simple `List.map`
 
 ```elm
 getEnemyNames : List Enemy -> List String
-getEnemyNames = List.map (get name)
+getEnemyNames =
+    List.map (get name)
 ```
 
 The same function can be defined for players with only a change to the type.
@@ -47,15 +50,17 @@ This is true for all of the functions in this example.
 
 ```elm
 getNames : List { b | name : a } -> List a
-getNames = List.map (get name)
+getNames =
+    List.map (get name)
 ```
 
 Or maybe a new round starts and you want to set all of the enemies ammo
-to 10 
+to 20 
 
 ```elm
 resetEnemies : List Enemy -> List Enemy
-resetEnemies = List.map (set ammo 20)
+resetEnemies =
+    List.map (set ammo 20)
 ```
 
 Let's say your player gets hit! We must reduce their number of lives,
@@ -63,7 +68,8 @@ which can be done with a call to `modify`
 
 ```elm
 playerHit : Player -> Player
-playerHit = modify num_lives ((-) 1)
+playerHit =
+    modify num_lives ((-) 1)
 ```
 
 Or if you have a list of enemies and you just hit them all in one shot,
@@ -71,5 +77,6 @@ you might want to modify all of their lives in one go.
 
 ```elm
 attackAllEnemies : List Enemy -> List Enemy
-attackAllEnemies = List.map (modify num_lives ((-) 1))
+attackAllEnemies =
+    List.map (modify num_lives ((-) 1))
 ```
