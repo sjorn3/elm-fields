@@ -10,9 +10,9 @@ and also applying updates to fields with a clean syntax.
   - `reset        = set num_lives 10`
   - `subOne field = modify field ((-) 1)`
   - `playerHit    = subOne num_lives`
-- Compose them with `compose` to access and modify elements of deeply nested
-  records with a smaller code size.
-  - ``setX n = set (pos `compose` x) n`` 
+- Compose them with `compose` (`<-<` or `>->`) to access and modify elements of
+  deeply nested records with a smaller code size.
+  - ``setX n = set (pos >-> x) n`` 
 - Although intended for records, the the underlying lenses are general enough
   for any data type. 
 
