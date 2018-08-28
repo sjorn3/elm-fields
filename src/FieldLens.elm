@@ -1,4 +1,9 @@
-module FieldLens exposing (FieldLens, get, set, modify, compose, (>->), (<-<))
+module FieldLens exposing
+    ( FieldLens
+    , get, set, modify
+    , compose
+    , composep
+    )
 
 {-| A module that allows field names to become parameters to functions. That is,
 a module which provides first class field names.
@@ -6,17 +11,21 @@ a module which provides first class field names.
 These operations are intended for use with field names, but the types are
 general enough for integration with other data types should the need arise.
 
+
 # Field Lenses
 
 @docs FieldLens
+
 
 # Manipulating Fields
 
 @docs get, set, modify
 
+
 # Composing field names
 
-@docs compose, (>->), (<-<)
+@docs compose, composep
+
 -}
 
 
@@ -28,8 +37,9 @@ this:
 
     field_name = { .field_name, (\a r -> { r | field_name = a })}
 
-This example leverages the fact that the field_name can be used as both the
+This example leverages the fact that the field\_name can be used as both the
 record's name and the field, but it could be called anything.
+
 -}
 type alias FieldLens a b c d =
     { get : a -> b, set : c -> a -> d }
@@ -79,27 +89,15 @@ compose a b =
     FieldLens (get a >> get b) (\x r -> set a (set b x <| get a r) r)
 
 
+{-| Same as `compose`, but with inverse parameter order. It is meant to be
+used with the pipeline operators (`|>` and `<|`) to compose for nested field access
 
---infixr 5 (<-<)
+    game : { player : { pos : { x : Int, y : Int }}}
+    game = Game (Player (Pos 0 0))
 
+    set (player |> composep pos |> composep x) 10 player == Game (Player (Pos 10 0))
 
-{-| Right associative infix synonym for compose.
-
-    set (x <-< pos) 10 player == Player (Pos 10 0)
 -}
-(<-<) : FieldLens b c g d -> FieldLens a b d e -> FieldLens a c g e
-(<-<) =
-    flip compose
-
-
-
---infixl 5 (>->)
-
-
-{-| Left associative infix synonym for compose.
-
-    set (pos >-> x) 10 player == Player (Pos 10 0)
--}
-(>->) : FieldLens a b d e -> FieldLens b c g d -> FieldLens a c g e
-(>->) =
-    compose
+composep : FieldLens b c g d -> FieldLens a b d e -> FieldLens a c g e
+composep b a =
+    compose a b
