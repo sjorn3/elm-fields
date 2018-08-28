@@ -78,10 +78,7 @@ suite =
                 "Test compose"
                 (\g -> Expect.equal (get (compose (compose player pos) x) g) (g.player.pos.x))
             , fuzz game
-                "Test infixl compose (>->)"
-                (\g -> Expect.equal (get (player >-> pos >-> x) g) (g.player.pos.x))
-            , fuzz game
-                "Test infixr compose (<-<)"
-                (\g -> Expect.equal (get (x <-< pos <-< player) g) (g.player.pos.x))
+                "Test composep with pipes"
+                (\g -> Expect.equal (get (player |> composep pos |> composep x) g) (g.player.pos.x))
             ]
         ]

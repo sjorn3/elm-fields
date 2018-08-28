@@ -10,9 +10,9 @@ and also applying updates to fields with a clean syntax.
   - `reset        = set num_lives 10`
   - `addOne field = modify field ((+) 1)`
   - `addLife player = addOne num_lives player`
-- Compose them with `compose` (`<-<` or `>->`) to access and modify elements of
+- Compose them with `compose` or `composep` to access and modify elements of
   deeply nested records with a smaller code size.
-  - ``setX n = set (pos >-> x) n`` 
+  - ``setX n = set (compose pos x) n``
 - Although intended for records, the underlying lenses are general enough
   for any data type. 
 
@@ -87,7 +87,7 @@ which can be done with a call to `modify`
 -}
 playerHit : Player -> Player
 playerHit =
-    modify num_lives (flip (-) 1)
+    modify num_lives (\lives -> lives - 1)
 
 
 {-
@@ -96,7 +96,7 @@ you might want to modify all of their lives in one go
 -}
 attackAllEnemies : List Enemy -> List Enemy
 attackAllEnemies =
-    List.map (modify num_lives (flip (-) 1))
+    List.map (modify num_lives (\lives -> lives - 1))
 ```
 ## Field passing
 
@@ -110,12 +110,12 @@ want to stringify one particular field, which is where using a field as an
 argument comes in handy.
 -}
 toStringField : FieldLens a b c d -> a -> String
-toStringField field = toString << get field
+toStringField field = Debug.toString << get field
 
 {-
-You could also define a function which takes the field and turns it into
-a string in a similar way using modify
+You could also define a function which takes an `Int` field and turns it into
+a `String` in a similar way using modify
 -}
-fieldToString : FieldLens a b String d -> a -> d
-fieldToString field = modify field toString
+fieldToString : FieldLens a Int String d -> a -> d
+fieldToString field = modify field String.fromInt
 ```
