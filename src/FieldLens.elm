@@ -1,8 +1,7 @@
 module FieldLens exposing
     ( FieldLens
     , get, set, modify
-    , compose
-    , composep
+    , compose, composep
     )
 
 {-| A module that allows field names to become parameters to functions. That is,
@@ -35,7 +34,8 @@ that fields can change their type.
 Definitions of the this type will be boilerplate, and will all have a form like
 this:
 
-    field_name = { .field_name, (\a r -> { r | field_name = a })}
+    field_name =
+        { get = .field_name, set = \a r -> { r | field_name = a } }
 
 This example leverages the fact that the field\_name can be used as both the
 record's name and the field, but it could be called anything.
@@ -58,7 +58,7 @@ get =
 {-| As with `get`, this is simply a synonym for `.set` and allows for slightly
 nicer usage of the field name.
 
-     set num_lives 10 player == { num_lives = 10, ... }
+    set num_lives 10 player == { num_lives = 10, ... }
 
 -}
 set : FieldLens a b c d -> c -> a -> d
@@ -78,7 +78,7 @@ modify field f record =
 
 {-| Compose field names, useful when records are nested.
 
-    player : { pos : { x : Int, y : Int }}
+    player : { pos : { x : Int, y : Int } }
     player = Player (Pos 0 0)
 
     set (compose pos x) 10 player == Player (Pos 10 0)
